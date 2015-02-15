@@ -1,14 +1,8 @@
 <head>
   <title>Chat App</title>
   <script>
-    function windowDimensions() {
+    function chatInit() {
       /*
-      function getWindowWidth() {
-        return window.innerWidth
-          || document.documentElement.clientWidth
-          || document.body.clientWidth;
-      }
-
       function setWidthView() {
         var w = getWindowWidth();
         document.getElementById("width").innerHTML = "width: " + w;
@@ -19,6 +13,12 @@
         document.getElementById("height").innerHTML = "height: " + h;
       }
       */
+
+      function getWindowWidth() {
+        return window.innerWidth
+          || document.documentElement.clientWidth
+          || document.body.clientWidth;
+      }
 
       function getWindowHeight() {
         return window.innerHeight
@@ -31,12 +31,66 @@
         document.getElementById("text").style.top = h + "px";
       }
 
+      function setListDimensions() {
+        var w = getWindowWidth() - 16 - 158;
+        var h = getWindowHeight() - 49;
+        var list = document.getElementById("message-list");
+        list.style.width = w + "px";
+        list.style.height = h + "px";
+      }
+
+      var modalWrapper = document.getElementById("modal-wrapper");
+      var modalWindow = document.getElementById("modal-window");
+
+      function showModal() {
+        modalWrapper.className = "overlay";
+        modalWindow.style.marginTop = (-modalWindow.offsetHeight)/2 + "px";
+        modalWindow.style.marginLeft = (-modalWindow.offsetWidth)/2 + "px";
+      }
+
+      function closeModal(e) {
+        e.preventDefault();
+        var placeholder = "Alias: " + e.target[0].value;
+        document.getElementById("text").placeholder = placeholder;
+        document.getElementById("sender").value = e.target[0].value;
+        modalWrapper.className = "";
+      }
+
+      function addMessage(e) {
+        e.preventDefault();
+        if (e.target[0].value == "") return;
+
+        var message = e.target[1].value + ": " + e.target[0].value + "<br>";
+        var list = document.getElementById("message-list");
+        list.innerHTML = list.innerHTML + message;
+        list.scrollTop = list.scrollHeight;
+        document.getElementById("text").value = "";
+      }
+
+      //var keyHandler = function(e) {
+        //e = e || window.event;
+        //if(e.keyCode == 13) closeModal();
+      //};
+
+      if(document.addEventListener) {
+        document.getElementById("modal-form").addEventListener("submit", closeModal, false);
+        document.getElementById("message-form").addEventListener("submit", addMessage, false);
+        //document.addEventListener("keydown", keyHandler, false);
+      } else {
+        document.getElementById("modal-form").attachEvent("onsubmit", closeModal);
+        document.getElementById("message-form").attachEvent("onsubmit", addMessage);
+        //document.attachEvent("onkeydown", keyHandler);
+      }
+
       //setWidthView();
       //setHeightView();
       repositionTextInput();
+      setListDimensions();
+      showModal();
 
-      window.onresize = function(event) {
+      window.onresize = function() {
         repositionTextInput();
+        setListDimensions();
 
         //setWidthView();
         //setHeightView();
@@ -47,17 +101,30 @@
 
 <body>
   <div id="container">
-    <form>
+
+    <div id="message-list">
+    </div>
+
+    <form id="message-form">
       <input type="text" name="text" id="text">
+      <input type=hidden name="sender" id="sender">
     </form>
-    <!--h2 id="width">
-    </h2>
-    <h2 id="height">
-    </h2-->
+
+  </div>
+
+  <div id="modal-wrapper">
+    <div id="modal-window">
+      <form id="modal-form">
+
+        <label for="alias">Alias:</label>
+        <input type="text" autofocus required id="alias" name="alias">
+
+      </form>
+    </div>
   </div>
 
   <script>
-    document.onload = windowDimensions();
+    document.onload = chatInit();
   </script>
 </body>
 
