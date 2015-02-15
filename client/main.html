@@ -1,0 +1,63 @@
+<head>
+  <title>Chat App</title>
+  <script>
+    function windowDimensions() {
+      /*
+      function getWindowWidth() {
+        return window.innerWidth
+          || document.documentElement.clientWidth
+          || document.body.clientWidth;
+      }
+
+      function setWidthView() {
+        var w = getWindowWidth();
+        document.getElementById("width").innerHTML = "width: " + w;
+      }
+
+      function setHeightView() {
+        var h = getWindowHeight();
+        document.getElementById("height").innerHTML = "height: " + h;
+      }
+      */
+
+      function getWindowHeight() {
+        return window.innerHeight
+          || document.documentElement.clientHeight
+          || document.body.clientHeight;
+      }
+
+      function repositionTextInput() {
+        var h = getWindowHeight() - 41;
+        document.getElementById("text").style.top = h + "px";
+      }
+
+      //setWidthView();
+      //setHeightView();
+      repositionTextInput();
+
+      window.onresize = function(event) {
+        repositionTextInput();
+
+        //setWidthView();
+        //setHeightView();
+      };
+    }
+  </script>
+</head>
+
+<body>
+  <div id="container">
+    <form>
+      <input type="text" name="text" id="text">
+    </form>
+    <!--h2 id="width">
+    </h2>
+    <h2 id="height">
+    </h2-->
+  </div>
+
+  <script>
+    document.onload = windowDimensions();
+  </script>
+</body>
+

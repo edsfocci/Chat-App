@@ -1,0 +1,13 @@
+body {
+    //background: green;
+}
+
+#container {
+    //background: blue;
+    padding-right: 8px;
+}
+
+#text {
+    position: relative;
+    width: 100%;
+}
