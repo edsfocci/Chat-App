@@ -1,5 +1,6 @@
 body {
     background: #ACE1AF;
+    font-family: sans-serif;
 }
 
 #container {
@@ -9,8 +10,8 @@ body {
 
 #message-list {
     background: #FFFFED;
-    #background: #ACE1AF;
     position: fixed;
+    padding: 2px 4px;
     overflow-y: scroll;
 }
 
@@ -46,5 +47,17 @@ body {
 
 #modal-wrapper.overlay #modal-window {
     display: block;
+}
+
+.green-txt {
+    color: #3CB371;
+}
+
+.blue-txt {
+    color: #4169E1;
+}
+
+.mag-txt {
+    color: #BA55D3;
 }
 

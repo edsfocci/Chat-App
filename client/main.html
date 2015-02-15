@@ -1,5 +1,5 @@
 <head>
-  <title>Chat App</title>
+  <title>Ed's Chat App :)</title>
   <script>
     function chatInit() {
       /*
@@ -32,8 +32,8 @@
       }
 
       function setListDimensions() {
-        var w = getWindowWidth() - 16 - 158;
-        var h = getWindowHeight() - 49;
+        var w = getWindowWidth() - 16 - 158 - 8;
+        var h = getWindowHeight() - 49 - 4;
         var list = document.getElementById("message-list");
         list.style.width = w + "px";
         list.style.height = h + "px";
@@ -60,7 +60,7 @@
         e.preventDefault();
         if (e.target[0].value == "") return;
 
-        var message = e.target[1].value + ": " + e.target[0].value + "<br>";
+        var message = "<span class=\"mag-txt\">" + e.target[1].value + ": </span><span class=\"blue-txt\">" + e.target[0].value + "</span><span class=\"green-txt\"> -" + new Date() + "</span><br>";
         var list = document.getElementById("message-list");
         list.innerHTML = list.innerHTML + message;
         list.scrollTop = list.scrollHeight;
@@ -74,11 +74,11 @@
 
       if(document.addEventListener) {
         document.getElementById("modal-form").addEventListener("submit", closeModal, false);
-        document.getElementById("message-form").addEventListener("submit", addMessage, false);
+        //document.getElementById("message-form").addEventListener("submit", addMessage, false);
         //document.addEventListener("keydown", keyHandler, false);
       } else {
         document.getElementById("modal-form").attachEvent("onsubmit", closeModal);
-        document.getElementById("message-form").attachEvent("onsubmit", addMessage);
+        //document.getElementById("message-form").attachEvent("onsubmit", addMessage);
         //document.attachEvent("onkeydown", keyHandler);
       }
 
@@ -103,12 +103,10 @@
   <div id="container">
 
     <div id="message-list">
+      {{> messagesList}}
     </div>
 
-    <form id="message-form">
-      <input type="text" name="text" id="text">
-      <input type=hidden name="sender" id="sender">
-    </form>
+    {{> messageSubmit}}
 
   </div>
 
