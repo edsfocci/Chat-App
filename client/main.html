@@ -7,70 +7,45 @@
     $("html").attr("xmlns", "http://www.w3.org/1999/xhtml");
 
     function chatInit() {
-      if (typeof Chat === "undefined") {
-        window.Chat = {};
+      /* Event handlers */
+      if(document.addEventListener) {
+        document.getElementById("modal-form").addEventListener("submit", closeModal, false);
+        document.addEventListener("keydown", keyHandler, false);
+        document.getElementById("modal-form").addEventListener("keydown", leaveModalFormAlone, false);
+        //document.getElementById("message-form").addEventListener("submit", addMessage, false);
+
+      } else {
+        document.getElementById("modal-form").attachEvent("onsubmit", closeModal);
+        document.attachEvent("onkeydown", keyHandler);
+        document.getElementById("modal-form").attachEvent("onkeydown", leaveModalFormAlone);
+        //document.getElementById("message-form").attachEvent("onsubmit", addMessage);
       }
 
-      Chat.messageListLengthLast = 0;
-      Chat.messageHeightCalculated = 0;
-      Chat.messageListHeightLastChange = 0;
-
-      /*
-      function setWidthView() {
-        var w = getWindowWidth();
-        document.getElementById("width").innerHTML = "width: " + w;
-      }
-
-      function setHeightView() {
-        var h = getWindowHeight();
-        document.getElementById("height").innerHTML = "height: " + h;
-      }
-      */
-
-      function getWindowWidth() {
-        return window.innerWidth
-          || document.documentElement.clientWidth
-          || document.body.clientWidth;
-      }
-
-      function getWindowHeight() {
-        return window.innerHeight
-          || document.documentElement.clientHeight
-          || document.body.clientHeight;
-      }
-
-      function repositionTextInput() {
-        var h = getWindowHeight() - 41;
-        document.getElementById("text").style.top = h + "px";
-      }
-
-      function setListDimensions() {
-        var w = getWindowWidth() - 16 - 158 - 8;
-        var h = getWindowHeight() - 49 - 4;
-        var list = document.getElementById("message-list");
-        list.style.width = w + "px";
-        list.style.height = h + "px";
-      }
-
-      function showModal() {
-        document.getElementById("modal-wrapper").className = "overlay";
-        var modalWindow = document.getElementById("modal-window");
-        modalWindow.style.marginTop = (-modalWindow.offsetHeight)/2 + "px";
-        modalWindow.style.marginLeft = (-modalWindow.offsetWidth)/2 + "px";
-      }
-
+      /* Event handler callbacks */
       function closeModal(e) {
         e.preventDefault();
 
-        if (document.getElementById("alias").value.length > 0) {
-          var alias = document.getElementById("alias").value;
-          var placeholder = "Alias: " + alias;
-          document.getElementById("text").placeholder = placeholder;
+        var alias = document.getElementById("alias").value;
+        if (alias.length > 0) {
+          document.getElementById("text").placeholder = "Alias: " + alias;
           document.getElementById("sender").value = alias;
           document.getElementById("modal-wrapper").className = "";
           document.getElementById("text").focus();
         }
       }
+
+      function keyHandler(e) {
+        var modalWrapper = document.getElementById("modal-wrapper");
+        if (modalWrapper.className === "overlay") {
+          if(e.keyCode == 13) {
+            closeModal(e);
+            // Below doesn't work w/ listener for some reason:
+            //document.forms["modal-form"].submit();
+          }
+        }
+      }
+
+      function leaveModalFormAlone(e) { e.stopPropagation(); }
       /*
       function addMessage(e) {
         e.preventDefault();
@@ -83,100 +58,72 @@
         document.getElementById("text").value = "";
       }
       */
-      function keyHandler(e) {
-        var modalWrapper = document.getElementById("modal-wrapper");
-        if (modalWrapper.className === "overlay") {
-          if(e.keyCode == 13) {
-            closeModal(e);
-            //document.forms["modal-form"].submit();
-          }
-        }
-      }
-
-      function leaveModalFormAlone(e) { e.stopPropagation(); }
-
+      /* Custom event handler callback */
       function scrollDownList() {
         var list = document.getElementById("message-list");
 
+        //console.log(list.scrollHeight);
+        //console.log(list.style.height);
         if (list.scrollHeight > (parseInt(list.style.height) + 4)) {
-          //console.log(list.scrollTop);
-          //console.log(list.style.height);
-          //console.log(list.scrollHeight);
-          if (Chat.messageListLengthLast != list.innerHTML.length) {
+          if (ChatUI.messageListLengthLast != list.innerHTML.length) {
 
-            if (Chat.messageHeightCalculated <= 0) {
-              //console.log("A");
+            if (ChatUI.messageHeightCalculated <= 0) {
+              console.log("A");
               list.scrollTop = list.scrollHeight;
-              Chat.messageHeightCalculated = list.scrollHeight;
-              Chat.messageListHeightLastChange = Chat.messageHeightCalculated;
+              ChatUI.messageHeightCalculated = list.scrollHeight;
+              ChatUI.messageListHeightLastChange =
+                ChatUI.messageHeightCalculated;
 
-            } else if (Chat.messageListHeightLastChange === list.scrollHeight) {
-              //console.log("B");
+            } else if (ChatUI.messageListHeightLastChange ===
+                list.scrollHeight) {
+              console.log("B");
 
-            } else if (Chat.messageHeightCalculated >
-                Math.abs(list.scrollHeight-Chat.messageListHeightLastChange)) {
-              //console.log("C");
-              Chat.messageHeightCalculated =
-                Math.abs(list.scrollHeight - Chat.messageListHeightLastChange);
-              Chat.messageListHeightLastChange = list.scrollHeight;
+            } else if (ChatUI.messageHeightCalculated >
+                Math.abs(list.scrollHeight -
+                ChatUI.messageListHeightLastChange)) {
+              console.log("C");
+              ChatUI.messageHeightCalculated =
+                Math.abs(list.scrollHeight -
+                ChatUI.messageListHeightLastChange);
+              ChatUI.messageListHeightLastChange = list.scrollHeight;
 
             } else {
-              //console.log("D");
-              Chat.messageListHeightLastChange = list.scrollHeight;
+              console.log("D");
+              ChatUI.messageListHeightLastChange = list.scrollHeight;
             }
 
-            //console.log(list.scrollHeight);
-            //console.log(Chat.messageListHeightLastChange);
             var modalWrapper = document.getElementById("modal-wrapper");
             if (modalWrapper.className === "overlay") {
+              console.log("overlay");
               list.scrollTop = list.scrollHeight;
 
             } else if ((list.scrollHeight - list.scrollTop) <
                 (parseInt(list.style.height) +
-                (Chat.messageHeightCalculated * 2))) {
+                (ChatUI.messageHeightCalculated * 2))) {
+              console.log("not overlay");
               list.scrollTop = list.scrollHeight;
             }
 
-            Chat.messageListLengthLast = list.innerHTML.length;
+            ChatUI.messageListLengthLast = list.innerHTML.length;
           }
         }
       }
-      /*
-      function analyze (e) {
-        //console.log(e);
-        var list = document.getElementById("message-list");
-        console.log(list.scrollTop);
-      }
-      */
-      if(document.addEventListener) {
-        document.getElementById("modal-form").addEventListener("submit", closeModal, false);
-        //document.getElementById("message-list").addEventListener("focus", analyze, false);
-        //document.getElementById("message-form").addEventListener("submit", addMessage, false);
-        document.addEventListener("keydown", keyHandler, false);
-        document.getElementById("modal-form").addEventListener("keydown", leaveModalFormAlone, false);
-      } else {
-        document.getElementById("modal-form").attachEvent("onsubmit", closeModal);
-        //document.getElementById("message-list").attachEvent("onfocus", analyze);
-        //document.getElementById("message-form").attachEvent("onsubmit", addMessage);
-        document.attachEvent("onkeydown", keyHandler);
-        document.getElementById("modal-form").attachEvent("onkeydown", leaveModalFormAlone);
-      }
 
-      //setWidthView();
-      //setHeightView();
-      repositionTextInput();
-      setListDimensions();
-      showModal();
+      //ChatUI.setWidthView();
+      //ChatUI.setHeightView();
+      ChatUI.repositionTextInput();
+      ChatUI.setListDimensions();
+      ChatUI.showModal();
       setInterval(scrollDownList, 100);
 
       window.onresize = function() {
-        setListDimensions();
-        repositionTextInput();
+        ChatUI.setListDimensions();
+        ChatUI.repositionTextInput();
         var list = document.getElementById("message-list");
-        Chat.messageListHeightLastChange = list.scrollHeight;
+        ChatUI.messageListHeightLastChange = list.scrollHeight;
 
-        //setWidthView();
-        //setHeightView();
+        //ChatUI.setWidthView();
+        //ChatUI.setHeightView();
       };
     }
   </script>

@@ -16,7 +16,7 @@ Template.messageSubmit.events({
       if (err) return alert(err.reason);
     });
 
-    //var list = document.getElementById("message-list");
-    //list.scrollTop = list.scrollHeight;
+    var list = document.getElementById("message-list");
+    list.scrollTop = list.scrollHeight;
   }
 });
