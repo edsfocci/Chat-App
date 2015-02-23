@@ -11,8 +11,12 @@ Template.messageSubmit.events({
     //if (message.text == "") return;
 
     //message._id = Messages.insert(message);
+    document.getElementById("text").value = "";
     Meteor.call('message', message, function(err, id) {
       if (err) return alert(err.reason);
     });
+
+    //var list = document.getElementById("message-list");
+    //list.scrollTop = list.scrollHeight;
   }
 });
