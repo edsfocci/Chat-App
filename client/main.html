@@ -1,6 +1,11 @@
 <head>
+  <meta charset=”UTF-8” />
   <title>Ed's Chat App :)</title>
+
   <script>
+    document.documentElement.lang = "en-US";
+    $("html").attr("xmlns", "http://www.w3.org/1999/xhtml");
+
     function chatInit() {
       if (typeof Chat === "undefined") {
         window.Chat = {};
@@ -56,11 +61,15 @@
 
       function closeModal(e) {
         e.preventDefault();
-        var placeholder = "Alias: " + e.target[0].value;
-        document.getElementById("text").placeholder = placeholder;
-        document.getElementById("sender").value = e.target[0].value;
-        document.getElementById("modal-wrapper").className = "";
-        document.getElementById("text").focus();
+
+        if (document.getElementById("alias").value.length > 0) {
+          var alias = document.getElementById("alias").value;
+          var placeholder = "Alias: " + alias;
+          document.getElementById("text").placeholder = placeholder;
+          document.getElementById("sender").value = alias;
+          document.getElementById("modal-wrapper").className = "";
+          document.getElementById("text").focus();
+        }
       }
       /*
       function addMessage(e) {
@@ -74,10 +83,17 @@
         document.getElementById("text").value = "";
       }
       */
-      //var keyHandler = function(e) {
-        //e = e || window.event;
-        //if(e.keyCode == 13) closeModal();
-      //};
+      function keyHandler(e) {
+        var modalWrapper = document.getElementById("modal-wrapper");
+        if (modalWrapper.className === "overlay") {
+          if(e.keyCode == 13) {
+            closeModal(e);
+            //document.forms["modal-form"].submit();
+          }
+        }
+      }
+
+      function leaveModalFormAlone(e) { e.stopPropagation(); }
 
       function scrollDownList() {
         var list = document.getElementById("message-list");
@@ -111,7 +127,11 @@
 
             //console.log(list.scrollHeight);
             //console.log(Chat.messageListHeightLastChange);
-            if ((list.scrollHeight - list.scrollTop) <
+            var modalWrapper = document.getElementById("modal-wrapper");
+            if (modalWrapper.className === "overlay") {
+              list.scrollTop = list.scrollHeight;
+
+            } else if ((list.scrollHeight - list.scrollTop) <
                 (parseInt(list.style.height) +
                 (Chat.messageHeightCalculated * 2))) {
               list.scrollTop = list.scrollHeight;
@@ -121,23 +141,25 @@
           }
         }
       }
-
+      /*
       function analyze (e) {
         //console.log(e);
         var list = document.getElementById("message-list");
         console.log(list.scrollTop);
       }
-
+      */
       if(document.addEventListener) {
         document.getElementById("modal-form").addEventListener("submit", closeModal, false);
         //document.getElementById("message-list").addEventListener("focus", analyze, false);
         //document.getElementById("message-form").addEventListener("submit", addMessage, false);
-        //document.addEventListener("keydown", keyHandler, false);
+        document.addEventListener("keydown", keyHandler, false);
+        document.getElementById("modal-form").addEventListener("keydown", leaveModalFormAlone, false);
       } else {
         document.getElementById("modal-form").attachEvent("onsubmit", closeModal);
         //document.getElementById("message-list").attachEvent("onfocus", analyze);
         //document.getElementById("message-form").attachEvent("onsubmit", addMessage);
-        //document.attachEvent("onkeydown", keyHandler);
+        document.attachEvent("onkeydown", keyHandler);
+        document.getElementById("modal-form").attachEvent("onkeydown", leaveModalFormAlone);
       }
 
       //setWidthView();
@@ -158,6 +180,10 @@
       };
     }
   </script>
+
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js" />
+  <![endif]-->
 </head>
 
 <body>
@@ -176,7 +202,9 @@
       <form id="modal-form">
 
         <label for="alias">Your Alias:</label>
-        <input type="text" autofocus required id="alias" name="alias" />
+        <input type="text" autofocus required id="alias" name="alias"
+          oninvalid="setCustomValidity('Please enter a Username')"
+          onchange="try{setCustomValidity('')}catch(e){}" />
 
       </form>
     </div>
