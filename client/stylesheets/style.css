@@ -1,6 +1,8 @@
 body {
     background: #ACE1AF;
     font-family: sans-serif;
+    margin-left: 149px;
+    margin-right: 149px;
 }
 
 #container {
@@ -12,6 +14,14 @@ body {
     background: #FFFFED;
     position: fixed;
     padding: 2px 4px;
+    overflow-y: scroll;
+}
+
+#online-list {
+    background: #FFFFED;
+    position: fixed;
+    padding: 2px 4px;
+    width: 162px;
     overflow-y: scroll;
 }
 

@@ -22,14 +22,19 @@ window.ChatUI = (function () {
       document.getElementById("text").style.top = xPos + "px";
     },
 
-    setListDimensions: function() {
+    setListsDimensions: function() {
       // ExtraWidth_Scrollbar + LeftMargin + WidthNameList + NameListMargins
       // TotalWidth_Scrollbar = 14px
-      var listWidth = this.getWindowWidth() - 8 - 8 - 156 - 16;
+      var messagelistWidth = this.getWindowWidth() - 149 - 8 - 149 - 162 - 8 - 8;// - 8 - 8 - 156 - 16;
       var listHeight = this.getWindowHeight() - 45 - 8;
-      var list = document.getElementById("message-list");
-      list.style.width = listWidth + "px";
-      list.style.height = listHeight + "px";
+
+      var messageList = document.getElementById("message-list");
+      messageList.style.width = messagelistWidth + "px";
+      messageList.style.height = listHeight + "px";
+
+      var onlineList = document.getElementById("online-list");
+      onlineList.style.left = messagelistWidth + 149 + 8 + 8 + "px";
+      onlineList.style.height = listHeight + "px";
     },
 
     showModal: function() {
