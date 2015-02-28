@@ -19,6 +19,7 @@ body {
 
 #online-list {
     background: #FFFFED;
+    color: #686868;
     position: fixed;
     padding: 2px 4px;
     width: 162px;
